@@ -28,7 +28,6 @@ class ItineraryContainer extends Component {
   }
 
   render() {
-    console.log('itinerary in itinerarycontainer: ', this.props.itinerary);
     return (
       <div>
 
@@ -51,7 +50,7 @@ class ItineraryContainer extends Component {
 }
 
 ItineraryContainer.propTypes = {
-  itinerary: PropTypes.object,
+  itinerary: PropTypes.object || PropTypes.bool,
 };
 
 export default ItineraryContainer;

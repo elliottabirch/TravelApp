@@ -26,7 +26,6 @@ class ActivityLeg extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('activityleg will receive props');
     this.setState({
       activity: nextProps.activity,
     });

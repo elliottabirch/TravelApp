@@ -189,11 +189,11 @@ class ResultsPage extends Component {
         });
       })
       .then((recAreaDetails) => {
-          that.setState({
+        that.setState({
             selectedEntity: generateDetailedEntity(entity, entityAddress.data, recAreaDetails.data),
             showModal: true,
           });
-        })
+      })
       .catch(err => console.error('error getting more details on entity', err));
     }
   }
@@ -262,19 +262,20 @@ class ResultsPage extends Component {
   clearWaypoints() {
     this.setState({
       waypoints: [],
-    })
+    });
   }
 
   clearItinerary() {
-    let entities = this.state.entities.slice();
-    entities.forEach((entity) => {entity.isAdded = false});
+    const entities = this.state.entities.slice();
+    entities.forEach((entity) => { entity.isAdded = false; });
+
 
     this.setState({
       itinerary: false,
       usedBudget: 0,
       usedTime: 0,
       entities,
-    }, () => { console.log(this.state.itinerary); });
+    });
   }
 
   downloadInnerHtml(filename, mimeType) {
@@ -333,7 +334,7 @@ class ResultsPage extends Component {
                   <ItineraryContainer
                     clearItinerary={this.clearItinerary}
                     clearWaypoints={this.clearWaypoints}
-                    
+
                     downloadInnerHtml={this.downloadInnerHtml}
                     itinerary={this.state.itinerary}
                     addTimeToWaypoint={this.debouncedAddTimeToWaypoint}

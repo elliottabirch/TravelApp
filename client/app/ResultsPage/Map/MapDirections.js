@@ -22,7 +22,6 @@ const MapDirections = (activities, starting, map, cb) => {
       } else {
         directionsDisplay.setMap(null);
       }
-      console.log('this is status of directions request: ', status);
       cb(results);
     });
   } else {
