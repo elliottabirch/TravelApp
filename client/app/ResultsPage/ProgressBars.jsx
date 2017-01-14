@@ -17,8 +17,8 @@ const ProgressBars = (props) => {
               </div>
               <div className="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-progress-bar">
                 <ProgressBar
-                  active bsStyle={(timePercent() < 0) ? 'danger' : 'success'}
-                  now={timePercent()} label={`${Math.ceil((props.totalBudget - props.usedBudget) / 3600)} hrs left`}
+                  active bsStyle={(timePercent() < 30) ? 'danger' : 'success'}
+                  now={timePercent()} label={`${Math.ceil((props.totalTime - props.usedTime) / 3600)} ${timePercent() < 30 ? '' : 'hrs left'}`}
                 />
               </div>
             </div>
@@ -30,8 +30,8 @@ const ProgressBars = (props) => {
               </div>
               <div className="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-progress-bar">
                 <ProgressBar
-                  active bsStyle={(budgetPercent() < 0) ? 'danger' : 'warning'}
-                  now={budgetPercent()} label={`$${Math.floor(props.totalBudget - props.usedBudget)} left`}
+                  active bsStyle={(budgetPercent() < 30) ? 'danger' : 'warning'}
+                  now={budgetPercent()} label={`$${Math.floor(props.totalBudget - props.usedBudget)} ${budgetPercent() < 30 ? '' : 'left'}`}
                 />
               </div>
             </div>

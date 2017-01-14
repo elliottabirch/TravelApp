@@ -28,6 +28,8 @@ class ActivityLeg extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       activity: nextProps.activity,
+      type: this.props.activity.type,
+      name: this.props.activity.name || 'Home',
     });
   }
 
