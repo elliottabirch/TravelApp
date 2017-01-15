@@ -25,6 +25,8 @@ class ResultsPage extends Component {
     this.state = {
       entities: [],
       waypoints: [],
+      activities: [],
+      waypointReferenceArray: [],
       selectedEntity: {},
       showModal: false,
       itinerary: [],
@@ -146,6 +148,7 @@ class ResultsPage extends Component {
     });
   }
 
+
   handleEntityClick(e, entity) {
     const that = this;
     let entityAddress;
@@ -190,9 +193,9 @@ class ResultsPage extends Component {
       })
       .then((recAreaDetails) => {
         that.setState({
-            selectedEntity: generateDetailedEntity(entity, entityAddress.data, recAreaDetails.data),
-            showModal: true,
-          });
+          selectedEntity: generateDetailedEntity(entity, entityAddress.data, recAreaDetails.data),
+          showModal: true,
+        });
       })
       .catch(err => console.error('error getting more details on entity', err));
     }
@@ -210,33 +213,56 @@ class ResultsPage extends Component {
     });
   }
 
-  handleAddToItineraryClick(e, entity) {
-    const { coordinates: [lat, lng], name } = entity;
-    let removeFlag = false;
+  addToItinerary(entity, lat, lng, name) {
     const waypoints = this.state.waypoints.slice();
-    waypoints.forEach(({ waypoint: { location: { lat: insideLat, lng: insideLng } } }, index) => {
-      if (insideLat === lat && insideLng === lng) {
-        waypoints.splice(index, 1);
-        removeFlag = true;
-        entity.isAdded = false;
-      }
+    const activities = this.state.activities.slice();
+    const entities = this.state.entities.slice();
+    const waypointReferenceArray = this.state.waypointReferenceArray.slice();
+
+    waypointReferenceArray.push(name);
+    waypoints.push({ location: { lat, lng }, stopover: true });
+    activities.push({ name, duration: 0, cost: {} });
+
+    const entitiesIndex = entities.indexOf(entity);
+    entities[entitiesIndex].isAdded = true;
+
+    this.setState({
+      waypointReferenceArray,
+      waypoints,
+      activities,
+      entities,
     });
-    if (!removeFlag) {
-      entity.isAdded = true;
-      waypoints.push({
-        name,
-        waypoint: {
-          location: { lat, lng },
-          stopover: true,
-        },
-        duration: 0,
-        cost: {},
-      },
-      );
-    }
+  }
+
+  removeFromItinerary(entity, waypointIndex) {
+    const waypoints = this.state.waypoints.slice();
+    const activities = this.state.activities.slice();
+    const entities = this.state.entities.slice();
+    const waypointReferenceArray = this.state.waypointReferenceArray.slice();
+
+
+    waypointReferenceArray.splice(waypointIndex, 1);
+    activities.splice(waypointIndex, 1);
+    waypoints.splice(waypointIndex, 1);
+
+    const entitiesIndex = entities.indexOf(entity);
+    entities[entitiesIndex].isAdded = false;
     this.setState({
       waypoints,
+      activities,
+      entities,
+      waypointReferenceArray,
     });
+  }
+
+  handleAddToItineraryClick(e, entity) {
+    const { coordinates: [lat, lng], name } = entity;
+
+    const waypointIndex = this.state.waypointReferenceArray.indexOf(name);
+
+    if (waypointIndex === -1) {
+      this.addToItinerary(entity, lat, lng, name);
+    } else this.removeFromItinerary(entity, waypointIndex);
   }
 
   addTimeToWaypoint(name, duration) {
