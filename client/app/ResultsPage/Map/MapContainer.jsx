@@ -26,12 +26,21 @@ class MapContainer extends Component {
     return false;
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (this.props.mapRef !== 1) {
+
+    }
+  }
+
+
   getMapRef(node) {
+    // if (!this.state.mapRef) {
     this.setState({
-      mapRef: node,
-    }, () => {
-      this.handleInitMapRender(this.state.mapRef);
-    });
+        mapRef: node,
+      }, () => {
+        this.handleInitMapRender(this.state.mapRef);
+      });
+    // }
   }
 
   handleInitMapRender(node) {
@@ -44,28 +53,7 @@ class MapContainer extends Component {
       this.renderEntities(this.state.map, this.props.entities);
     });
   }
-  renderEntities(map, entities) {
-    const markers = this.makeEntityMarkers(entities, map, this.makeEntityInfoWindows.bind(this));
-    new MarkerClusterer(map, markers, { imagePath: './maps/img/m' });
 
-    if (this.props.waypoints[0]) {
-      MapDirections(this.props.waypoints, this.props.startingLocation, this.state.map, this.props.setItinerary);
-    } else { this.props.clearItinerary(); }
-  }
-
-  makeEntityMarkers(entities, map, infoWindowCb) {
-    if (map) {
-      const markers = entities.map(({ name, coordinates: [lat, lng] }, index) =>
-        new google.maps.Marker({
-          position: { lat, lng },
-          label: `${index + 1}`,
-          map,
-          title: name,
-        }));
-      infoWindowCb(markers, map, entities);
-      return markers;
-    }
-  }
 
   makeEntityInfoWindows(markers, map, entities) {
     const infoWindow = new google.maps.InfoWindow();
@@ -96,6 +84,30 @@ class MapContainer extends Component {
           <a id="theOtherButton"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>&nbsp;Add to itinerary</a>
         </div>`
     );
+  }
+
+
+  makeEntityMarkers(entities, map, infoWindowCb) {
+    if (map) {
+      const markers = entities.map(({ name, coordinates: [lat, lng] }, index) =>
+        new google.maps.Marker({
+          position: { lat, lng },
+          label: `${index + 1}`,
+          map,
+          title: name,
+        }));
+      infoWindowCb(markers, map, entities);
+      return markers;
+    }
+  }
+
+  renderEntities(map, entities) {
+    const markers = this.makeEntityMarkers(entities, map, this.makeEntityInfoWindows.bind(this));
+    new MarkerClusterer(map, markers, { imagePath: './maps/img/m' });
+
+    if (this.props.waypoints[0]) {
+      MapDirections(this.props.waypoints, this.props.startingLocation, this.state.map, this.props.setItinerary);
+    } else { this.props.clearItinerary(); }
   }
 
   render() {
