@@ -12,47 +12,52 @@ class MapContainer extends Component {
       directions: [],
     };
 
-    this.handleInitMapRender = this.handleInitMapRender.bind(this);
-    this.getMapRef = this.getMapRef.bind(this);
+    // this.handleInitMapRender = this.handleInitMapRender.bind(this);
+    this.setMapRef = this.setMapRef.bind(this);
+    this.renderEntities = this.renderEntities.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    console.log('thisprops', this.props.entities[0], 'nextprops', nextProps.entities[0]);
     if ((nextProps.startingLocation !== this.props.startingLocation
-      || nextProps.entities.length !== this.props.entities.length
-      || nextProps.waypoints !== this.props.waypoints
-      || !this.state.mapRef)) {
+      || nextProps.entities[0] !== this.props.entities[0]
+      || nextProps.waypoints !== this.props.waypoints)) {
       return true;
     }
     return false;
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.props.mapRef !== 1) {
+  // componentWillUpdate(nextProps, nextState) {
+  //   if (this.props.mapRef !== 1) {
+  //     this.handleInitMapRender(nextState.mapRef);
+  //   }
+  // }
 
+
+  setMapRef(node, entities) {
+    // console.log('this is node: ', entities);
+    if (node !== null) {
+      const map = new google.maps.Map(node, {
+        center: this.props.startingLocation || { lat: 37.775, lng: -122.419 },
+        zoom: 7,
+      });
+      if (entities[0]) {
+        this.renderEntities(map, entities);
+      }
     }
   }
 
 
-  getMapRef(node) {
-    // if (!this.state.mapRef) {
-    this.setState({
-        mapRef: node,
-      }, () => {
-        this.handleInitMapRender(this.state.mapRef);
-      });
-    // }
-  }
-
-  handleInitMapRender(node) {
-    this.setState({
-      map: new google.maps.Map(node, {
-        center: this.props.startingLocation || { lat: 37.775, lng: -122.419 },
-        zoom: 7,
-      }),
-    }, () => {
-      this.renderEntities(this.state.map, this.props.entities);
-    });
-  }
+  // handleInitMapRender(node) {
+  //   this.setState({
+  //     map: new google.maps.Map(node, {
+  //       center: this.props.startingLocation || { lat: 37.775, lng: -122.419 },
+  //       zoom: 7,
+  //     }),
+  //   }, () => {
+  //     this.renderEntities(this.state.map, this.props.entities);
+  //   });
+  // }
 
 
   makeEntityInfoWindows(markers, map, entities) {
@@ -112,7 +117,7 @@ class MapContainer extends Component {
 
   render() {
     return (
-      <Map handleInitMapRender={this.getMapRef} />
+      <Map setMapRef={this.setMapRef} entities={this.props.entities} />
     );
   }
 }

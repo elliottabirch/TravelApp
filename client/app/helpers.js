@@ -6,32 +6,36 @@ function toTitleCase(str) {
 
 const uniqueEntities = {};
 // function for creating objects from the results of api request to the US website
-const generateData = res => res.map(({
-  FacilityLatitude,
-  FacilityLongitude,
-  FacilityName,
-  FacilityPhone,
-  FacilityDescription,
-  FacilityEmail,
-  URL,
-  EntityID,
-  RecAreaLatitude,
-  RecAreaLongitude,
-  RecAreaName,
-  RecAreaPhone,
-  RecAreaDescription,
-  RecAreaEmail,
-}) => ({
-  name: FacilityName || RecAreaName,
-  image: URL,
-  email: FacilityEmail || RecAreaEmail,
-  phoneNumber: FacilityPhone || RecAreaPhone,
-  description: FacilityDescription || RecAreaDescription,
-  coordinates: FacilityLatitude ? [+FacilityLatitude, +FacilityLongitude] : [+RecAreaLatitude, +RecAreaLongitude],
-  facility: !!FacilityName,
-  recArea: !!RecAreaName,
-  entityID: EntityID,
-}));
+const generateData = (res) => {
+  if (res) {
+    return res.map(({
+      FacilityLatitude,
+      FacilityLongitude,
+      FacilityName,
+      FacilityPhone,
+      FacilityDescription,
+      FacilityEmail,
+      URL,
+      EntityID,
+      RecAreaLatitude,
+      RecAreaLongitude,
+      RecAreaName,
+      RecAreaPhone,
+      RecAreaDescription,
+      RecAreaEmail,
+    }) => ({
+      name: FacilityName || RecAreaName,
+      image: URL,
+      email: FacilityEmail || RecAreaEmail,
+      phoneNumber: FacilityPhone || RecAreaPhone,
+      description: FacilityDescription || RecAreaDescription,
+      coordinates: FacilityLatitude ? [+FacilityLatitude, +FacilityLongitude] : [+RecAreaLatitude, +RecAreaLongitude],
+      facility: !!FacilityName,
+      recArea: !!RecAreaName,
+      entityID: EntityID,
+    }));
+  }
+};
 
 const generateDetailedEntity = (entity, entityAddress, { activities, trails }) => {
   const activitiesList = activities.map(Activity => toTitleCase(Activity));

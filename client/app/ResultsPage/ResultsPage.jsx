@@ -23,8 +23,8 @@ class ResultsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      entities: [],
       waypoints: [],
+      entities: [],
       activities: [],
       waypointReferenceArray: [],
       selectedEntity: {},
@@ -59,6 +59,7 @@ class ResultsPage extends Component {
   }
 
   componentWillMount() {
+    console.log('compenentwillmountcalled');
     getCoordinates(this.props.userQuery.startingLocation, ({ lat, lng }) => {
       this.setState({ startingLocation: { lat: lat(), lng: lng() } }, () => {
         this.getEntityList(this.props.userQuery, this.state.startingLocation, this.props.userInterests);
@@ -68,19 +69,20 @@ class ResultsPage extends Component {
     this.setTotalBudget(this.props.userQuery.budgetOfTrip);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.userQuery !== nextProps.userQuery) {
-      getCoordinates(nextProps.userQuery.startingLocation, ({ lat, lng }) => {
-        this.setState({ startingLocation: { lat: lat(), lng: lng() } }, () => {
-          this.getEntityList(nextProps.userQuery, this.state.startingLocation, nextProps.userInterests);
-        });
-      });
-      this.setTotalTime(this.state.startingTime, this.state.endingTime, this.props.userQuery.lengthOfTrip);
-      this.setTotalBudget(nextProps.userQuery.budgetOfTrip);
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.userQuery !== nextProps.userQuery) {
+  //     getCoordinates(nextProps.userQuery.startingLocation, ({ lat, lng }) => {
+  //       this.setState({ startingLocation: { lat: lat(), lng: lng() } }, () => {
+  //         this.getEntityList(nextProps.userQuery, this.state.startingLocation, nextProps.userInterests);
+  //       });
+  //     });
+  //     this.setTotalTime(this.state.startingTime, this.state.endingTime, this.props.userQuery.lengthOfTrip);
+  //     this.setTotalBudget(nextProps.userQuery.budgetOfTrip);
+  //   }
+  // }
 
   getEntityList(query, location, interests) {
+    console.log('getentitylist called');
     axios.get('/entitiesWithinRadius', {
       params: {
         latitude: location.lat,
@@ -90,12 +92,14 @@ class ResultsPage extends Component {
       },
     })
       .then((res) => {
+        console.log('res data', res.data);
         if (res.data.length === 0) {
           alert('There are no results for this search - try searching with different inputs');
+        } else {
+          this.setState({
+            entities: generateData(res.data),
+          });
         }
-        this.setState({
-          entities: generateData(res.data),
-        });
       })
       .catch(err => console.error('error loading getEntityList request', err));
   }
